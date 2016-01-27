@@ -6,7 +6,7 @@
 /*   By: jcazako <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/27 13:39:32 by jcazako           #+#    #+#             */
-/*   Updated: 2016/01/27 17:20:29 by jcazako          ###   ########.fr       */
+/*   Updated: 2016/01/27 18:20:44 by jcazako          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 static t_gnl	*rd_list(t_list **list, const int fd)
 {
-	t_gnl	content;
-	t_list	*lst_tmp;
+	t_gnl		content;
+	t_list		*lst_tmp;
 
 	if (fd < 0 || !list)
 		return (NULL);
@@ -38,9 +38,9 @@ static t_gnl	*rd_list(t_list **list, const int fd)
 	return ((*list)->content);
 }
 
-static char	*realloc_str(char **str, char *buff, int len)
+static char		*realloc_str(char **str, char *buff, int len)
 {
-	char	*temp;
+	char		*temp;
 
 	temp = *str;
 	if (!(*str = ft_strnew(len)))
@@ -54,10 +54,10 @@ static char	*realloc_str(char **str, char *buff, int len)
 	return (*str);
 }
 
-static char	*gnl(char **line, char **str)
+static char		*gnl(char **line, char **str)
 {
-	int		i;
-	char	*str_n;
+	int			i;
+	char		*str_n;
 
 	ft_strdel(line);
 	i = 0;
@@ -77,11 +77,11 @@ static char	*gnl(char **line, char **str)
 	return (*line);
 }
 
-static int	rd_content(t_gnl *content, char **line)
+static int		rd_content(t_gnl *content, char **line)
 {
-	char	buff[BUFF_SIZE + 1];
-	int		len;
-	int		ret;
+	char		buff[BUFF_SIZE + 1];
+	int			len;
+	int			ret;
 
 	len = ft_strlen(content->str);
 	while (!ft_strchr(content->str, '\n'))
@@ -104,12 +104,12 @@ static int	rd_content(t_gnl *content, char **line)
 	return (1);
 }
 
-int		get_next_line(const int fd, char **line)
+int				get_next_line(const int fd, char **line)
 {
-	static	t_list	*list;
-	t_gnl	*gnl_data;
+	static t_list	*list;
+	t_gnl			*gnl_data;
 
-	if (BUFF_SIZE <= 0 || !(gnl_data = rd_list(&list, fd)))
+	if (BUFF_SIZE <= 0 || !line || !(gnl_data = rd_list(&list, fd)))
 		return (-1);
 	return (rd_content(gnl_data, line));
 }
