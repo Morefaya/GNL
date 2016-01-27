@@ -6,7 +6,7 @@
 /*   By: jcazako <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/27 13:39:32 by jcazako           #+#    #+#             */
-/*   Updated: 2016/01/27 15:31:07 by jcazako          ###   ########.fr       */
+/*   Updated: 2016/01/27 16:45:32 by jcazako          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,44 @@ static t_gnl	*rd_list(t_list **list, const int fd)
 	return ((*list)->content)
 }
 
+static char	*realloc_str(char **str, char *buff, int len)
+{
+	char	*temp;
 
+	temp = *str;
+	if (!(*str = ft_stnew(len)))
+		return (NULL);
+	if (temp)
+	{
+		ft_strcpy(*str, temp);
+		free(temp);
+	}
+	ft_strcat(*str, buff);
+	return (*str);
+}
+
+static char	*gnl(char **line, char **str)
+{
+	int		i;
+	char	*str_n;
+
+	ft_strdel(line);
+	i = 0;
+	str_n = NULL;
+	while (*(*str + i) != '\n' && *(*str + i) != '\0')
+		i++;
+	if (!(*line = ft_strsub(*str, 0, i)))
+		return (NULL);
+	if (*(*str + i) == '\n')
+	{
+		i++;
+		if (!(str_n = ft_strsub(*str, i, ft_strlen(*str) - i)))
+			return (NULL);
+	}
+	ft_strdel(str);
+	*str = str_n;
+	return (*line);
+}
 
 static int	rd_content(t_gnl *content, char **line)
 {
@@ -54,18 +91,25 @@ static int	rd_content(t_gnl *content, char **line)
 			return (-1);
 		len += ret;
 		if (!ret)
-			return ();
-
+		{
+			if (!gnl(line, &(content->str)))
+				return (-1);
+			return (0);
+		}
+		if (!realloc_str(&(content->str), buff, len))
+			return (-1);
 	}
+	if (!gnl(line, &(content->size)))
+		return (-1);
+	return (1);
 }
 
 int		get_next_line(const int fd, char **line)
 {
 	static	t_list	*list;
-	char	buff[BUFF_SIZE + 1];
-	int		ret;
 	t_gnl	*gnl_data;
 
-	if (!line || !(gnl_data = rd_list(&list, fd)))
+	if (BUFF_SIZE <= 0 || !(gnl_data = rd_list(&list, fd)))
 		return (-1);
+	return (rd_content(gnl_data, line));
 }
