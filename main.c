@@ -6,7 +6,7 @@
 /*   By: jcazako <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/21 16:53:05 by jcazako           #+#    #+#             */
-/*   Updated: 2016/01/27 19:01:46 by jcazako          ###   ########.fr       */
+/*   Updated: 2016/01/30 18:44:45 by jcazako          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,11 @@ int			main(int ac, char **av)
 	else if (ac > 2)
 		puterror();
 	ret = 0;
-	while ((ret = get_next_line(fd, &line)) == 1)
+	while ((ret = get_next_line(fd, &line)) != -1)
 	{
 		ft_putendl(line);
 	}
+	free(line);
 	close(fd);
 	return (0);
 }

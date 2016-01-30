@@ -6,7 +6,7 @@
 /*   By: jcazako <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/27 13:39:32 by jcazako           #+#    #+#             */
-/*   Updated: 2016/01/27 18:20:44 by jcazako          ###   ########.fr       */
+/*   Updated: 2016/01/30 18:41:07 by jcazako          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static t_gnl	*rd_list(t_list **list, const int fd)
 	return ((*list)->content);
 }
 
-static char		*realloc_str(char **str, char *buff, int len)
+/*static char		*realloc_str(char **str, char *buff, int len)
 {
 	char		*temp;
 
@@ -52,32 +52,33 @@ static char		*realloc_str(char **str, char *buff, int len)
 	}
 	ft_strcat(*str, buff);
 	return (*str);
-}
+}*/
 
-static char		*gnl(char **line, char **str)
+static int			gnl(char **line, char **str)
 {
 	int			i;
 	char		*str_n;
 
-	ft_strdel(line);
 	i = 0;
 	str_n = NULL;
+	if (!*str)
+		return (0);
 	while (*(*str + i) != '\n' && *(*str + i) != '\0')
 		i++;
 	if (!(*line = ft_strsub(*str, 0, i)))
-		return (NULL);
+		return (-1);
 	if (*(*str + i) == '\n')
 	{
 		i++;
 		if (!(str_n = ft_strsub(*str, i, ft_strlen(*str) - i)))
-			return (NULL);
+			return (-1);
 	}
 	ft_strdel(str);
 	*str = str_n;
-	return (*line);
+	return (1);
 }
 
-static int		rd_content(t_gnl *content, char **line)
+/*static int		rd_content(t_gnl *content, char **line)
 {
 	char		buff[BUFF_SIZE + 1];
 	int			len;
@@ -102,6 +103,23 @@ static int		rd_content(t_gnl *content, char **line)
 	if (!gnl(line, &(content->str)))
 		return (-1);
 	return (1);
+}*/
+
+static char		*read_fd(t_gnl **content)
+{
+	char	buff[BUFF_SIZE + 1];
+	char	*tmp;
+
+	ft_bzero(buff, BUFF_SIZE + 1);
+	while (read((*content)->fd, buff, BUFF_SIZE) > 0)
+	{
+		tmp = (*content)->str;
+		if(!((*content)->str = ft_strjoin((*content)->str, buff)))
+			return (NULL);
+		ft_bzero(buff, BUFF_SIZE + 1);
+		free(tmp);
+	}
+	return ((*content)->str);
 }
 
 int				get_next_line(const int fd, char **line)
@@ -111,5 +129,7 @@ int				get_next_line(const int fd, char **line)
 
 	if (BUFF_SIZE <= 0 || !line || !(gnl_data = rd_list(&list, fd)))
 		return (-1);
-	return (rd_content(gnl_data, line));
+	if (!read_fd(&gnl_data))
+		return (-1);
+	return (gnl(line , &(gnl_data->str)));
 }
