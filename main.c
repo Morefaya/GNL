@@ -6,7 +6,7 @@
 /*   By: jcazako <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/21 16:53:05 by jcazako           #+#    #+#             */
-/*   Updated: 2016/01/30 18:44:45 by jcazako          ###   ########.fr       */
+/*   Updated: 2016/01/31 17:16:17 by jcazako          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ int			main(int ac, char **av)
 {
 	int		fd;
 	char	*line;
-	int		ret;
 	int	i;
 
 	i = 0;
@@ -39,20 +38,19 @@ int			main(int ac, char **av)
 	}
 	else if (ac > 2)
 		puterror();
-	ret = 0;
-	/*while ((ret = get_next_line(fd, &line)) != -1)
+	while (get_next_line(fd, &line))
 	{
 		ft_putendl(line);
 		free(line);
-	}*/
-	while (i < 2)
+	}
+	/*while (i < 6)
 	{
 		ft_putnbr(get_next_line(fd, &line));
 		ft_putchar('\t');
 		ft_putendl(line);
 		ft_strdel(&line);
 		i++;
-	}
+	}*/
 	close(fd);
 	return (0);
 }
