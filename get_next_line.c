@@ -54,28 +54,28 @@ static t_gnl	*rd_list(t_list **list, const int fd)
 	return (*str);
 }*/
 
-static int			gnl(char **line, char **str)
+static char			*gnl(char **line, char **str)
 {
 	int			i;
 	char		*str_n;
 
+	if (!*str)
+		return (NULL);
 	i = 0;
 	str_n = NULL;
-	if (!*str)
-		return (0);
 	while (*(*str + i) != '\n' && *(*str + i) != '\0')
 		i++;
 	if (!(*line = ft_strsub(*str, 0, i)))
-		return (-1);
+		return (NULL);
 	if (*(*str + i) == '\n')
 	{
 		i++;
 		if (!(str_n = ft_strsub(*str, i, ft_strlen(*str) - i)))
-			return (-1);
+			return (NULL);
 	}
 	ft_strdel(str);
 	*str = str_n;
-	return (1);
+	return (*line);
 }
 
 /*static int		rd_content(t_gnl *content, char **line)
@@ -105,21 +105,24 @@ static int			gnl(char **line, char **str)
 	return (1);
 }*/
 
-static char		*read_fd(t_gnl **content)
+static int			read_fd(t_gnl **content)
 {
 	char	buff[BUFF_SIZE + 1];
 	char	*tmp;
+	int	ret;
 
 	ft_bzero(buff, BUFF_SIZE + 1);
-	while (read((*content)->fd, buff, BUFF_SIZE) > 0)
+	while ((ret = read((*content)->fd, buff, BUFF_SIZE)) > 0)
 	{
 		tmp = (*content)->str;
 		if(!((*content)->str = ft_strjoin((*content)->str, buff)))
-			return (NULL);
+			return (1);
 		ft_bzero(buff, BUFF_SIZE + 1);
 		free(tmp);
 	}
-	return ((*content)->str);
+	if (ret == -1)
+		return (1);
+	return (0);
 }
 
 int				get_next_line(const int fd, char **line)
@@ -129,7 +132,11 @@ int				get_next_line(const int fd, char **line)
 
 	if (BUFF_SIZE <= 0 || !line || !(gnl_data = rd_list(&list, fd)))
 		return (-1);
-	if (!read_fd(&gnl_data))
-		return (-1);
-	return (gnl(line , &(gnl_data->str)));
+	if (read_fd(&gnl_data))
+		return (-2);
+	if (!gnl(line , &(gnl_data->str)))
+		return (-3);
+	if (!**line)
+		return (0);
+	return (1);
 }

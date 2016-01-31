@@ -25,7 +25,9 @@ int			main(int ac, char **av)
 	int		fd;
 	char	*line;
 	int		ret;
+	int	i;
 
+	i = 0;
 	line = NULL;
 	fd = 0;
 	if (ac == 2)
@@ -38,11 +40,19 @@ int			main(int ac, char **av)
 	else if (ac > 2)
 		puterror();
 	ret = 0;
-	while ((ret = get_next_line(fd, &line)) != -1)
+	/*while ((ret = get_next_line(fd, &line)) != -1)
 	{
 		ft_putendl(line);
+		free(line);
+	}*/
+	while (i < 2)
+	{
+		ft_putnbr(get_next_line(fd, &line));
+		ft_putchar('\t');
+		ft_putendl(line);
+		ft_strdel(&line);
+		i++;
 	}
-	free(line);
 	close(fd);
 	return (0);
 }
