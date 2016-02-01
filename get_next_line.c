@@ -37,34 +37,31 @@ static t_gnl		*rd_list(t_list **list, const int fd)
 	ft_lstadd(list, lst_tmp);
 	return ((*list)->content);
 }
-
 static int			gnl(char **line, char **str)
 {
-	int				i;
-	char			*str_n;
+	int			ret;
+	char			*tmp;
 
-	i = 0;
-	str_n = NULL;
-	if (*str)
+	ret = 0;
+	if ((tmp = ft_strchr(*str, '\n')))
 	{
-		while (*(*str + i) != '\n' && *(*str + i) != '\0')
-			i++;
-		if (!(*line = ft_strsub(*str, 0, i)))
+		*tmp = '\0';
+		if (!(*line = ft_strdup(*str)))
 			return (-1);
-		if (*(*str + i) == '\n')
-		{
-			i++;
-			if (!(str_n = ft_strsub(*str, i, ft_strlen(*str) - i)))
-				return (-1);
-		}
-		ft_strdel(str);
-		*str = str_n;
+		tmp++;
+		ft_strcpy(*str, tmp);
+		ret = 1;
+	}
+	else if (ft_strlen(*str))
+	{
+		if (!(*line = ft_strdup(*str)))
+			return (-1);
+		**str = '\0';
+		ret = 1;
 	}
 	else if (!(*line = ft_strnew(0)))
 		return (-1);
-	if (**line)
-		return (1);
-	return (0);
+	return (ret);
 }
 
 static int			read_fd(t_gnl **content)

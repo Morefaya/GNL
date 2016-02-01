@@ -38,19 +38,19 @@ int			main(int ac, char **av)
 	}
 	else if (ac > 2)
 		puterror();
-	while (get_next_line(fd, &line))
+	/*while (get_next_line(fd, &line))
 	{
 		ft_putendl(line);
 		free(line);
-	}
-	/*while (i < 6)
+	}*/
+	while (i < 6)
 	{
 		ft_putnbr(get_next_line(fd, &line));
 		ft_putchar('\t');
 		ft_putendl(line);
 		ft_strdel(&line);
 		i++;
-	}*/
+	}
 	close(fd);
 	return (0);
 }
