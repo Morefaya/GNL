@@ -1,5 +1,5 @@
 CFLAG = -Wall -Wextra -Werror
-H_LIB = libft/include
+H_LIB = libft/includes
 
 .PHONY: test_gnl
 

@@ -1,6 +1,6 @@
 CC = gcc
 CFLAG = -Wall -Wextra -Werror
-HDIR = include
+HDIR = includes
 SRC = ft_atoi.c ft_bzero.c ft_check_charset.c \
 ft_chisdigit.c ft_isalnum.c ft_isalpha.c \
 ft_isascii.c ft_isdigit.c ft_isprint.c \
